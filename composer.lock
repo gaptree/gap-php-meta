@@ -1,0 +1,51 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "003f0f800415192327220894a8ea40cb",
+    "packages": [
+        {
+            "name": "gap/database",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://project.tecposter.cn/diffusion/52/gap-php-database.git",
+                "reference": "22583e63524c32d826ce34e48e4813373eb4d948"
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Gap\\Database\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "zhanjh",
+                    "email": "zhanjh@126.com"
+                }
+            ],
+            "description": "Gap Database",
+            "homepage": "https://project.tecposter.cn/diffusion/52/",
+            "keywords": [
+                "gap"
+            ],
+            "time": "2017-12-03T12:09:31+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=7.1.0"
+    },
+    "platform-dev": []
+}

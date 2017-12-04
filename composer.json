@@ -1,0 +1,41 @@
+{
+    "name": "gap/meta",
+    "type": "library",
+    "description": "Gap Meta",
+    "keywords": [
+        "gap"
+    ],
+    "homepage": "https://project.tecposter.cn/diffusion/57/",
+    "authors": [
+        {
+            "name": "zhanjh",
+            "email": "zhanjh@126.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0",
+        "gap/database": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gap\\Meta\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "phpunit\\Gap\\Meta\\": "phpunit"
+        }
+    },
+    "scripts": {
+        "test": [
+            "@phpcs",
+            "@phpmd",
+            "@phpstan",
+            "@phpunit"
+        ],
+        "phpunit": "phpunit",
+        "phpstan": "phpstan analyse -l 7 -c phpstan.neon phpunit src",
+        "phpcs": "phpcs --report=full --standard=psr2 --extensions=php src phpunit",
+        "phpmd": "phpmd src,phpunit text cleancode,codesize,controversial,design,naming,unusedcode"
+    }
+}
