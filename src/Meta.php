@@ -9,7 +9,7 @@ class Meta
     protected $cnn;
     protected $cache;
 
-    protected $table = 'meta';
+    protected $table = 'gap_meta';
     protected $defaultLocaleKey = 'zh-cn';
 
     public function __construct(MysqlConnection $cnn, Redis $cache)
