@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "gap/db",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gaptree/gap-php-db.git",
-                "reference": "6ab93d4da0bf55ba3fcb3997e610381b70d77259"
+                "reference": "6b424d3bce2f6e7c9e1f6c059f3ddd6fc915c71f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://files.phpcomposer.com/files/gaptree/gap-php-db/6ab93d4da0bf55ba3fcb3997e610381b70d77259.zip",
-                "reference": "6ab93d4da0bf55ba3fcb3997e610381b70d77259",
+                "url": "https://files.phpcomposer.com/files/gaptree/gap-php-db/6b424d3bce2f6e7c9e1f6c059f3ddd6fc915c71f.zip",
+                "reference": "6b424d3bce2f6e7c9e1f6c059f3ddd6fc915c71f",
                 "shasum": ""
             },
             "require": {
@@ -48,7 +48,7 @@
             "keywords": [
                 "gap"
             ],
-            "time": "2018-03-10T15:25:21+00:00"
+            "time": "2018-03-10T16:08:28+00:00"
         },
         {
             "name": "gap/dto",
