@@ -2,7 +2,7 @@
 namespace Gap\Meta;
 
 use Redis;
-use Gap\Database\Connection\Mysql as MysqlConnection;
+use Gap\Db\MySql\Cnn;
 
 class Meta
 {
@@ -12,7 +12,7 @@ class Meta
     protected $table = 'gap_meta';
     protected $defaultLocaleKey = 'zh-cn';
 
-    public function __construct(MysqlConnection $cnn, Redis $cache)
+    public function __construct(Cnn $cnn, Redis $cache)
     {
         $this->cnn = $cnn;
         $this->cache = $cache;
@@ -56,8 +56,9 @@ class Meta
         $this->cache->hDel($localeKey, $metaKey);
         $this->cnn->delete()
             ->from($this->table)
-            ->where('key', '=', $metaKey)
-            ->andWhere('localeKey', '=', $localeKey)
+            ->where()
+                ->expect('key')->beStr($metaKey)
+                ->andExpect('localeKey')->beStr($localeKey)
             ->execute();
     }
 
@@ -112,8 +113,9 @@ class Meta
     {
         $obj = $this->cnn->select('value')
             ->from($this->table)
-            ->where('localeKey', '=', $localeKey)
-            ->andWhere('key', '=', $metaKey)
+            ->where()
+                ->expect('localeKey')->beStr($localeKey)
+                ->andExpect('key')->beStr($metaKey)
             ->fetchObj();
 
         if (!$obj) {
@@ -127,19 +129,22 @@ class Meta
     {
         if ($this->findFromDb($localeKey, $metaKey)) {
             $this->cnn->update($this->table)
-                ->where('localeKey', '=', $localeKey)
-                ->andWhere('key', '=', $metaKey)
-                ->set('value', $metaValue)
+                ->set('value')->beStr($metaValue)
+                ->where()
+                    ->expect('localeKey')->beStr($localeKey)
+                    ->andExpect('key')->beStr($metaKey)
                 ->execute();
 
             return;
         }
 
         $this->cnn->insert($this->table)
-            ->value('metaId', $this->cnn->zid())
-            ->value('localeKey', $localeKey)
-            ->value('key', $metaKey)
-            ->value('value', $metaValue)
+            ->field('metaId', 'localeKey', 'key', 'value')
+            ->value()
+                ->addStr($this->cnn->zid())
+                ->addStr($localeKey)
+                ->addStr($metaKey)
+                ->addStr($metaValue)
             ->execute();
     }
 }
