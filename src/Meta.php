@@ -2,19 +2,17 @@
 namespace Gap\Meta;
 
 use Redis;
-use Gap\Db\MySql\Cnn;
 
 class Meta
 {
-    protected $cnn;
+    protected $repo;
     protected $cache;
 
-    protected $table = 'gap_meta';
     protected $defaultLocaleKey = 'zh-cn';
 
-    public function __construct(Cnn $cnn, Redis $cache)
+    public function __construct(Repo\MetaRepoInterface $repo, Redis $cache)
     {
-        $this->cnn = $cnn;
+        $this->repo = $repo;
         $this->cache = $cache;
     }
 
@@ -54,12 +52,7 @@ class Meta
     public function delete($localeKey, $metaKey)
     {
         $this->cache->hDel($localeKey, $metaKey);
-        $this->cnn->delete()
-            ->from($this->table)
-            ->where()
-                ->expect('key')->beStr($metaKey)
-                ->andExpect('localeKey')->beStr($localeKey)
-            ->execute();
+        $this->repo->delete($localeKey, $metaKey);
     }
 
     protected function lget($metaKey, $localeKey)
@@ -109,42 +102,13 @@ class Meta
         $this->saveToDb($localeKey, $metaKey, $metaValue);
     }
 
-    protected function findFromDb($localeKey, $metaKey)
+    protected function findFromDb($localeKey, $metaKey): string
     {
-        $obj = $this->cnn->select('value')
-            ->from($this->table)
-            ->where()
-                ->expect('localeKey')->beStr($localeKey)
-                ->andExpect('key')->beStr($metaKey)
-            ->fetchObj();
-
-        if (!$obj) {
-            return null;
-        }
-
-        return $obj->value;
+        return $this->repo->fetchMetaValue($localeKey, $metaKey);
     }
 
-    protected function saveToDb($localeKey, $metaKey, $metaValue)
+    protected function saveToDb($localeKey, $metaKey, $metaValue): void
     {
-        if ($this->findFromDb($localeKey, $metaKey)) {
-            $this->cnn->update($this->table)
-                ->set('value')->beStr($metaValue)
-                ->where()
-                    ->expect('localeKey')->beStr($localeKey)
-                    ->andExpect('key')->beStr($metaKey)
-                ->execute();
-
-            return;
-        }
-
-        $this->cnn->insert($this->table)
-            ->field('metaId', 'localeKey', 'key', 'value')
-            ->value()
-                ->addStr($this->cnn->zid())
-                ->addStr($localeKey)
-                ->addStr($metaKey)
-                ->addStr($metaValue)
-            ->execute();
+        $this->repo->save($localeKey, $metaKey, $metaValue);
     }
 }
