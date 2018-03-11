@@ -39,7 +39,11 @@ class Meta
             return $this->getMetaValue($this->localeKey, $key);
         }
 
-        $key = $key . '-%$' . implode('$s-%$', array_keys($vars)) . '$s';
+        //$key = $key . '-%$' . implode('$s-%$', array_keys($vars)) . '$s';
+        $count = count($vars);
+        for ($i = 1; $i <= $count; $i++) {
+            $key .= '-%$' . $i . '$s';
+        }
         return sprintf($this->getMetaValue($this->localeKey, $key), ...$vars);
 
         /* todo delete lator

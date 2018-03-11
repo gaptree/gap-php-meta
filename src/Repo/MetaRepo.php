@@ -19,17 +19,17 @@ class MetaRepo implements MetaRepoInterface
     {
         if ($this->fetchMetaValue($localeKey, $metaKey)) {
             $this->cnn->update($this->table)
-                ->set('value')->beStr($metaValue)
+                ->set('`value`')->beStr($metaValue)
                 ->where()
                     ->expect('localeKey')->beStr($localeKey)
-                    ->andExpect('key')->beStr($metaKey)
+                    ->andExpect('`key`')->beStr($metaKey)
                 ->execute();
 
             return;
         }
 
         $this->cnn->insert($this->table)
-            ->field('metaId', 'localeKey', 'key', 'value')
+            ->field('metaId', 'localeKey', '`key`', '`value`')
             ->value()
                 ->addStr($this->cnn->zid())
                 ->addStr($localeKey)
@@ -43,18 +43,19 @@ class MetaRepo implements MetaRepoInterface
         $this->cnn->delete()
             ->from($this->table)
             ->where()
-                ->expect('key')->beStr($metaKey)
+                ->expect('`key`')->beStr($metaKey)
                 ->andExpect('localeKey')->beStr($localeKey)
             ->execute();
     }
 
     public function fetchMetaValue(string $localeKey, string $metaKey): string
     {
-        $metaArr = $this->cnn->select('value')
+        $metaArr = $this->cnn->select('`value`')
             ->from($this->table)
             ->where()
                 ->expect('localeKey')->beStr($localeKey)
-                ->andExpect('key')->beStr($metaKey)
+                ->andExpect('`key`')->beStr($metaKey)
+            ->limit(1)
             ->execute()
             ->fetchAssoc();
 
@@ -63,6 +64,6 @@ class MetaRepo implements MetaRepoInterface
             return '';
         }
 
-        return $metaArr['value'];
+        return $metaArr['`value`'];
     }
 }
