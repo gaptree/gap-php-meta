@@ -55,6 +55,7 @@ class MetaRepo implements MetaRepoInterface
             ->where()
                 ->expect('localeKey')->beStr($localeKey)
                 ->andExpect('key')->beStr($metaKey)
+            ->execute()
             ->fetchAssoc();
 
 
