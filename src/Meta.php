@@ -42,7 +42,7 @@ class Meta
         //$key = $key . '-%$' . implode('$s-%$', array_keys($vars)) . '$s';
         $count = count($vars);
         for ($i = 1; $i <= $count; $i++) {
-            $key .= '-%$' . $i . '$s';
+            $key .= '-%' . $i . '$s';
         }
         return sprintf($this->getMetaValue($this->localeKey, $key), ...$vars);
 
