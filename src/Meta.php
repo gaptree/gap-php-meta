@@ -8,7 +8,7 @@ class Meta
     protected $repo;
     protected $cache;
 
-    protected $defaultLocaleKey = 'zh-cn';
+    protected $localeKey = 'zh-cn';
 
     public function __construct(Repo\MetaRepoInterface $repo, Redis $cache)
     {
@@ -16,13 +16,33 @@ class Meta
         $this->cache = $cache;
     }
 
-    public function setDefaultLocaleKey($localeKey)
+    public function setLocaleKey(string $localeKey): void
     {
-        $this->defaultLocaleKey = $localeKey;
+        $this->localeKey = $localeKey;
     }
 
-    public function get($str, $vars = [], $localeKey = '')
+    public function localeGet(string $localeKey, string $key, string ...$vars): string
     {
+        $this->setLocaleKey($localeKey);
+        return $this->get($key, ...$vars);
+    }
+
+    public function localeSet(string $localeKey, string $key, string $value): void
+    {
+        $this->setLocaleKey($localeKey);
+        $this->set($key, $value);
+    }
+
+    public function get(string $key, string ...$vars): string
+    {
+        if (!$vars) {
+            return $this->getMetaValue($this->localeKey, $key);
+        }
+
+        $key = $key . '-%$' . implode('$s-%$', array_keys($vars)) . '$s';
+        return sprintf($this->getMetaValue($this->localeKey, $key), ...$vars);
+
+        /* todo delete lator
         if (!$localeKey) {
             $localeKey = $this->defaultLocaleKey;
         }
@@ -47,6 +67,12 @@ class Meta
         $args[0] = $this->lget($str, $localeKey);
 
         return sprintf(...$args);
+        */
+    }
+
+    public function set(string $key, string $value): void
+    {
+        $this->setMeta($this->localeKey, $key, $value);
     }
 
     public function delete($localeKey, $metaKey)
@@ -55,7 +81,17 @@ class Meta
         $this->repo->delete($localeKey, $metaKey);
     }
 
-    protected function lget($metaKey, $localeKey)
+    protected function findFromDb($localeKey, $metaKey): string
+    {
+        return $this->repo->fetchMetaValue($localeKey, $metaKey);
+    }
+
+    protected function saveToDb($localeKey, $metaKey, $metaValue): void
+    {
+        $this->repo->save($localeKey, $metaKey, $metaValue);
+    }
+
+    protected function getMetaValue($localeKey, $metaKey)
     {
         if (!$metaKey) {
             // todo
@@ -77,11 +113,11 @@ class Meta
         }
 
         $metaValue = '#' . $metaKey;
-        $this->set($localeKey, $metaKey, $metaValue);
+        $this->setMeta($localeKey, $metaKey, $metaValue);
         return $metaValue;
     }
 
-    public function set($localeKey, $metaKey, $metaValue)
+    protected function setMeta($localeKey, $metaKey, $metaValue)
     {
         if (!$metaKey) {
             // todo
@@ -100,15 +136,5 @@ class Meta
 
         $this->cache->hSet($localeKey, $metaKey, $metaValue);
         $this->saveToDb($localeKey, $metaKey, $metaValue);
-    }
-
-    protected function findFromDb($localeKey, $metaKey): string
-    {
-        return $this->repo->fetchMetaValue($localeKey, $metaKey);
-    }
-
-    protected function saveToDb($localeKey, $metaKey, $metaValue): void
-    {
-        $this->repo->save($localeKey, $metaKey, $metaValue);
     }
 }
