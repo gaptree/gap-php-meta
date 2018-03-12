@@ -75,6 +75,6 @@ class MetaRepo implements MetaRepoInterface
             return '';
         }
 
-        return $metaArr['`value`'];
+        return $metaArr['value'];
     }
 }
