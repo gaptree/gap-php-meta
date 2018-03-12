@@ -8,17 +8,11 @@
     "packages": [
         {
             "name": "gap/db",
-            "version": "v1.0.2",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/gaptree/gap-php-db.git",
-                "reference": "6b424d3bce2f6e7c9e1f6c059f3ddd6fc915c71f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://files.phpcomposer.com/files/gaptree/gap-php-db/6b424d3bce2f6e7c9e1f6c059f3ddd6fc915c71f.zip",
-                "reference": "6b424d3bce2f6e7c9e1f6c059f3ddd6fc915c71f",
-                "shasum": ""
+                "url": "https://github.com/gaptree/gap-php-db",
+                "reference": "d5a3ea9bf34f488574101a1687f775c684144e06"
             },
             "require": {
                 "gap/dto": "^1.0",
@@ -36,7 +30,31 @@
                     "Gap\\Db\\": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "phpunit\\Gap\\Db\\": "phpunit"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "@phpcs",
+                    "@phpmd",
+                    "@phpstan",
+                    "@phpunit"
+                ],
+                "phpunit": [
+                    "phpunit"
+                ],
+                "phpstan": [
+                    "phpstan analyse -l 7 -c phpstan.neon phpunit src"
+                ],
+                "phpcs": [
+                    "phpcs --report=full --standard=psr2 --extensions=php src phpunit"
+                ],
+                "phpmd": [
+                    "phpmd src,phpunit text cleancode,codesize,controversial,design,naming,unusedcode"
+                ]
+            },
             "authors": [
                 {
                     "name": "zhanjh",
@@ -48,7 +66,7 @@
             "keywords": [
                 "gap"
             ],
-            "time": "2018-03-10T16:08:28+00:00"
+            "time": "2018-03-12T14:55:33+00:00"
         },
         {
             "name": "gap/dto",

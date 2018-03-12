@@ -17,46 +17,57 @@ class MetaRepo implements MetaRepoInterface
 
     public function save(string $localeKey, string $metaKey, string $metaValue): void
     {
+        $cnn = $this->cnn;
+
         if ($this->fetchMetaValue($localeKey, $metaKey)) {
-            $this->cnn->update($this->table)
-                ->set('`value`')->beStr($metaValue)
-                ->where()
-                    ->expect('localeKey')->beStr($localeKey)
-                    ->andExpect('`key`')->beStr($metaKey)
+            $cnn->update($cnn->table($this->table))
+                ->set('`value`', $cnn->str($metaValue))
+                ->where(
+                    $cnn->cond()
+                        ->expect('localeKey')->equal($cnn->str($localeKey))
+                        ->andExpect('`key`')->equal($cnn->str($metaKey))
+                )
                 ->execute();
 
             return;
         }
 
-        $this->cnn->insert($this->table)
+        $cnn->insert($this->table)
             ->field('metaId', 'localeKey', '`key`', '`value`')
-            ->value()
-                ->addStr($this->cnn->zid())
-                ->addStr($localeKey)
-                ->addStr($metaKey)
-                ->addStr($metaValue)
+            ->value(
+                $cnn->value()
+                    ->add($cnn->str($cnn->zid()))
+                    ->add($cnn->str($localeKey))
+                    ->add($cnn->str($metaKey))
+                    ->add($cnn->str($metaValue))
+            )
             ->execute();
     }
 
     public function delete(string $localeKey, string $metaKey): void
     {
+        $cnn = $this->cnn;
         $this->cnn->delete()
-            ->from($this->table)
-            ->where()
-                ->expect('`key`')->beStr($metaKey)
-                ->andExpect('localeKey')->beStr($localeKey)
+            ->from($cnn->table($this->table))
+            ->where(
+                $cnn->cond()
+                    ->expect('`key`')->equal($cnn->str($metaKey))
+                    ->andExpect('localeKey')->equal($cnn->str($localeKey))
+            )
             ->execute();
     }
 
     public function fetchMetaValue(string $localeKey, string $metaKey): string
     {
-        $metaArr = $this->cnn->select('`value`')
-            ->from($this->table)
-            ->where()
-                ->expect('localeKey')->beStr($localeKey)
-                ->andExpect('`key`')->beStr($metaKey)
+        $cnn = $this->cnn;
+        $metaArr = $cnn->select('`value`')
+            ->from($cnn->table($this->table))
+            ->where(
+                $cnn->cond()
+                    ->expect('localeKey')->equal($cnn->str($localeKey))
+                    ->andExpect('`key`')->equal($cnn->str($metaKey))
+            )
             ->limit(1)
-            ->execute()
             ->fetchAssoc();
 
 
