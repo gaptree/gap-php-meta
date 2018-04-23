@@ -1,7 +1,7 @@
 <?php
 namespace Gap\Meta\Repo;
 
-use Gap\Db\MySql\Cnn;
+use Gap\Db\Contract\CnnInterface;
 
 class MetaRepo implements MetaRepoInterface
 {
@@ -10,7 +10,7 @@ class MetaRepo implements MetaRepoInterface
     protected $table = 'gap_meta';
 
 
-    public function __construct(Cnn $cnn)
+    public function __construct(CnnInterface $cnn)
     {
         $this->cnn = $cnn;
     }
