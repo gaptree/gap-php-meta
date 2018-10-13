@@ -36,7 +36,7 @@ class MetaRepo implements MetaRepoInterface
             ->field('metaId', 'localeKey', '`key`', '`value`')
             ->value(
                 $cnn->value()
-                    ->add($cnn->str($cnn->zid()))
+                    ->add($cnn->str($cnn->uniqBin()))
                     ->add($cnn->str($localeKey))
                     ->add($cnn->str($metaKey))
                     ->add($cnn->str($metaValue))
